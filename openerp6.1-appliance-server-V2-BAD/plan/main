@@ -1,0 +1,60 @@
+#include <turnkey/base>
+
+python 
+python-dev 
+build-essential 
+
+python-psycopg2 
+python-reportlab 
+python-egenix-mxdatetime 
+python-tz 
+python-pychart 
+python-pydot 
+python-lxml 
+python-libxslt1 
+python-vobject 
+graphviz 
+python-libxml2 
+python-imaging
+##### Fails in Ubuntu Lucid: python-profiler
+python-pybabel # opcional
+
+# required by openerp-server trunk V6:
+#####easy_install PyWebDAV
+#davserver -D /tmp -n
+python-webdav
+# openerp-client requirements:
+python-gtk2 
+python-glade2 
+xpdf 
+# Matplotlib & hippocanvas still required by openerp-client (not listed as a dependency for the package):
+python-matplotlib 
+python-hippocanvas
+# Required by openerp v6:
+python-yaml 
+python-mako 
+python-sqlalchemy 
+python-beaker
+
+
+xauth # Ubuntu 8.04.3 LTS Server requires xauth binary to remotely display linux applications like openerp-client
+# Installing zenity on Ubuntu Server for the updater
+#apt-get install -y zenity
+
+dialog # Installing dialog on appliance as required by the text console updater
+
+
+#python-software-properties  
+#add-apt-repository ppa:bzr/ppa
+#apt-get update
+
+
+python-openid
+python-ldap
+python2.6-dev
+
+#easy_install pip
+#/usr/local/bin/pip install werkzeug # en lugar de "apt-get install python-werkzeug"
+
+python-dateutil
+python-gtk2

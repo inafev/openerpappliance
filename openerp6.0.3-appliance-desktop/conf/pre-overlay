@@ -1,0 +1,125 @@
+#!/bin/bash -ex
+
+PSQLRELEASE=8.4
+PASSWVAR="openerp"
+PYTHONRELEASE=python2.6
+UBUNTURELEASE=10.04
+INSTALLPATH=/usr
+SITEPACKAGESPATH=$INSTALLPATH/lib/$PYTHONRELEASE/site-packages
+OPENERPSERVERPATH=$SITEPACKAGESPATH/openerp-server
+ADDONSPATH=$OPENERPSERVERPATH/addons/
+OPENERPSERVERWRONGPATH=/nobugnoworkaround
+MYDESKTOP=/home/openerp
+#OPENERPPASSWORD=$(mcookie)
+OPENERPPASSWORD="openerp"
+USER=openerp
+STABLETRUNKLINK=6.0
+STABLETRUNKVAR=6.0
+RELEASE=6.0.3
+PATH=/usr/bin:/sbin:/bin:/usr/sbin
+
+
+echo "------------------------------------"
+echo "Enabling ubuntu multiverse repository"
+echo "------------------------------------"
+APT_SOURCES=/etc/apt/sources.list.d
+sed -i "/lucid multiverse/ s/# //" $APT_SOURCES/sources.list
+sed -i "/lucid-updates multiverse/ s/# //" $APT_SOURCES/sources.list
+sed -i "/lucid-security multiverse/ s/# //" $APT_SOURCES/security.sources.list
+apt-get update
+apt-get install -y python python-dev build-essential python-setuptools python-psycopg2 python-reportlab python-egenix-mxdatetime python-tz python-pychart python-pydot python-lxml python-libxslt1 python-vobject graphviz python-libxml2 python-imaging;
+##### Fails in Ubuntu Lucid: python-profiler
+# instalo sudo para ubuntu lucid, pybabel opcional:
+apt-get install -y python-pybabel sudo
+# required by openerp-server trunk V6:
+#####easy_install PyWebDAV
+#davserver -D /tmp -n
+# if ubuntu >= karmic 9.10 use this instead:
+apt-get install -y python-webdav
+# openerp-client requirements:
+apt-get install -y python-gtk2 python-glade2 xpdf; 
+# Matplotlib & hippocanvas still required by openerp-client (not listed as a dependency for the package):
+apt-get install -y python-matplotlib python-hippocanvas;
+# Required by openerp v6:
+apt-get install -y python-yaml python-mako python-sqlalchemy python-beaker
+
+# Ubuntu 8.04.3 LTS Server requires xauth binary to remotely display linux applications like openerp-client:
+apt-get install -y xauth
+# Installing zenity on Ubuntu Server for the updater
+#apt-get install -y zenity
+# Installing dialog on appliance as required by the text console updater:
+apt-get install -y dialog
+
+#if [ "$UBUNTURELEASE" = "8.04" -o "$UBUNTURELEASE" = "9.10" ]; then
+# To fix a new error "The required version of setuptools (>=0.6c11) is not available", march 11th 2010
+#echo "# DON'T PRESS ACCEPT/OK !!. Installing setuptools >=0.6c11";
+######easy_install -U setuptools
+#fi
+
+#Postgres Database configuration:
+# vi /etc/postgresql/8.3/main/pg_hba.conf
+#Replace the following line:
+    ## “local” is for Unix domain socket connections only
+    #local all all ident sameuser
+#with:
+    ##”local” is for Unix domain socket connections only
+    #local all all trust
+#Please, note that "local all all md5" was set up in previous versions of this script, but database backup failed from openerp-web and
+#openerp-client with this config (with an empty file as result)
+sed -i 's/\(local[[:space:]]*all[[:space:]]*all[[:space:]]*\)\(ident[[:space:]]*sameuser\)/\1trust/g' /etc/postgresql/$PSQLRELEASE/main/pg_hba.conf
+
+#Restart Postgres:
+/etc/init.d/postgresql-$PSQLRELEASE start
+#Create a user account called openerp with password “openerp” and with privileges to create Postgres databases:
+# su postgres
+#createuser openerp -P
+#    Enter password for new role: (openerp)
+#    Enter it again:
+#    Shall the new role be a superuser? (y/n) n
+#    Shall the new role be allowed to create databases? (y/n) y
+#    Shall the new role be allowed to create more new roles? (y/n) n
+
+sudo -u postgres createuser openerp --no-superuser --createdb --no-createrole 
+sudo -u postgres psql template1 -U postgres -c "alter user openerp with password '$PASSWVAR'"
+
+# lxdm es el desktop manager de lxde, pero no se encuentra en el repositorio. instalo gdm
+# lo instalo en el pre pq tengo en overlay ficheros modificados de gdm
+#apt-get install -y gdm
+#############apt-get install -y lxdm
+
+echo "------------------------------------"
+echo "Downloading OPENERP"
+echo "------------------------------------"
+
+#apt-get clean
+#apt-get -f update
+apt-get install -y bzr
+
+#/usr/sbin/adduser --quiet --system --group openerp 
+useradd -c "openerp user" -m -s /bin/bash openerp
+# Setting up openerp password
+echo "openerp:$OPENERPPASSWORD" | chpasswd
+#echo "openerp:openerp" | chpasswd
+
+chmod 440 /etc/sudoers
+chown root.root /etc/sudoers
+# Add a existing openerp user to existing group adm (adm in /etc/sudoers):
+usermod -a -G adm openerp
+
+mkdir -p /home/openerp/production
+cd /home/openerp/production/
+bzr branch -rtag:$RELEASE lp:openobject-server/$STABLETRUNKLINK openerp-server 
+bzr branch -rtag:$RELEASE lp:openobject-client/$STABLETRUNKLINK openerp-client 
+bzr branch -rtag:$RELEASE lp:openobject-client-web/$STABLETRUNKLINK openerp-web 
+bzr branch -rtag:$RELEASE lp:openobject-addons/$STABLETRUNKLINK addons 
+bzr branch lp:openobject-addons/extra-$STABLETRUNKLINK extra-addons 
+# Following line fixes this bug: "Import module menu is missing" https://bugs.launchpad.net/openobject-server/+bug/506662?comments=all
+#sed -i "s/\(\"active\".*\)\(True,\)/\1False,/g" /home/openerp/production/extra-addons/use_control/__terp__.py 
+
+###################################################################################################
+# Workaround for this error 'No handlers could be found for logger “bzr”' when user runs bzr after this script is executed
+# This usually just means you don’t have permission to write to the log. Sometimes it ends up belonging to root (because of  bzr)
+chown $USER ~/.bzr.log
+chmod 644 ~/.bzr.log
+
+chown -R openerp.openerp /home/openerp

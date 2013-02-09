@@ -1,0 +1,158 @@
+		    OPENERPAPPLIANCE.COM 
+
+HOWTO UPDATE OPENERP
+====================
+OpenERP branches are update-able through Launchpad with the help of 
+openerp-update script (a simple text console menu). Procedure:
+
+1) Launch a terminal emulator like xterm or LXTerminal
+2) Run the following command to get usage information:
+	openerp-update --help
+3) Run the OpenERP updater:
+	openerp-update
+   Or run the OpenERP updater without prompts:
+	openerp-update fast
+4) Full logging: /home/openerp/OpenERP-updates.txt file is created with
+   records of installed or updated OpenERP revisions. This is useful to 
+   be in control of your updates:
+	less /home/openerp/OpenERP-updates.txt
+
+HOWTO CHANGE YOUR KEYBOARD LAYOUT
+=================================
+Change your keyboard layout by clicking on "keyboard" icon or running the 
+following command in a shell terminal:
+  gnome-keyboard-properties  
+
+LXDE Tip: 
+  Add a keyboard indicator for LXPanel by right clicking on LXPanel (tool bar) ->
+  add/remove Panel Items -> Panel Applets -> Add -> KEYBOARD LAYOUT SWITCHER
+
+##########################################################################
+# RUNNING OPENERP APPLIANCE IN A VIRTUAL MACHINE
+# WINDOWS HOSTS WITH VIRTUALBOX OR VMWARE PLAYER VIRTUAL MACHINES
+##########################################################################
+
+Both "VirtualBox Guest Additions" and "VMware Tools" provide better integration between 
+the guest Operating System (this openerp appliance) and the host Operating System (Windows): 
+    * Ability to move mouse between guest and host OS without having to press 
+      the right CTRL key to switch
+    * Clipboard support: cut/copy and paste between the guest and host OS
+    * Screen resolution: automatic resize of the guest OS when you resize the VirtualBox 
+      window 
+    * shared folders between guest and host OS (highly recommended)
+    * plug-and-play devices
+    * clock synchronization 
+      
+SCREEN RESOLUTION ON VIRTUALBOX
+HOWTO SETUP VIRTUALBOX GUEST ADDITIONS TO GET FULL SCREEN MODE 
+==============================================================
+1) Make sure your have installed “guest additions” ('Devices' tab), while
+   your OpenERP Appliance is running. VirtualBox documentation describes 
+   how to do this.
+2) Run this script (located in /home/openerp/bin/): 
+
+   virtualbox-guest-additions-installer.sh 
+
+   Your OpenERP Appliance will be restarted
+   Remember to run the former script each time your linux kernel is upgraded.
+  
+3) Stop your OpenERP Appliance running on VirtualBox 
+4) INCREASE the amount of VIDEO RAM for the Virtual Machine to 128MB
+   The default is 8 MB
+5) Increase the amount of RAM for the Virtual Machine (1GB recommended)
+6) Restart your OpenERP Appliance
+7) If you reach a text based login screen when your appliance is restarted,
+   press ALT+F7 to get the graphical desktop, and CTRL-ALT-F1 to get back to the console.
+
+Link of interest: 
+http://helpdeskgeek.com/linux-tips/install-virtualbox-guest-additions-in-ubuntu/
+
+SCREEN RESOLUTION ON VMWARE PLAYER
+HOWTO SETUP VMWARE TOOLS TO GET FULL SCREEN MODE 
+================================================
+1) "Virtual Machine" tab >> "Install VMware Tools"
+2) Run this script (located in /home/openerp/bin/):
+
+   vmware-tools-installer.sh  
+
+   Your OpenERP Appliance will be restarted
+   Remember to run the former script each time your linux kernel is upgraded.
+   Increase the amount of RAM for the Virtual Machine (1GB recommended)
+
+3) If you reach a text based login screen when your appliance is restarted,
+   press ALT+F7 to get the graphical desktop, and CTRL-ALT-F1 to get back to the console.
+
+NETWORK SETTINGS IN VIRTUALBOX / HOST-ONLY NETWORKING
+HOWTO REACH OPENERP APPLIANCE ON A VIRTUALBOX MACHINE FROM WINDOWS HOST
+=======================================================================
+Set your VirtualBox machine to use the "Host-only Ethernet Adapter" in
+configuration menu "Network" >> "Host Interface Settings" >> "Interface Name".
+
+Like VMware, this is a virtual network adapter created during the installation.
+It has its own subnet and behaves like a real interface, for all practical 
+purposes. It's a router inside your computer, specifically managing guest 
+machines. This is ideal for local development and testing. User programs like 
+Firefox or ssh can operate through Host-only network adapter.
+
+HOST-ONLY is recommended in VirtualBox when you don’t require to connect from 
+an external machine in your LAN to your virtual machine. 
+
+For host-only networking, like with internal networking, you may find the DHCP 
+server useful that is built into VirtualBox. This can be enabled to then manage 
+the IP addresses in the host-only network since otherwise you would need to 
+configure all IP addresses statically:
+      In the VirtualBox graphical user interface, you can configure all these 
+      items in the global settings via "File" -> "Settings" -> "Network", which 
+      lists all host-only networks which are presently in use. Click on the 
+      network name and then on the "Edit" button to the right, and you can modify 
+      the adapter and DHCP settings.
+    
+      Alternatively, you can use VBoxManage dhcpserver on the command line; please 
+      see the section called “VBoxManage dhcpserver” at 
+      http://www.virtualbox.org/manual for details
+
+NETWORK SETTINGS IN VIRTUALBOX / BRIDGED NETWORKING
+HOWTO REACH OPENERP APPLIANCE ON A VIRTUALBOX MACHINE FROM YOUR LAN
+===================================================================
+It leases IPs from outside your PC or laptop. For example, your guest machines
+retrieve IP addresses from your wireless router, becoming another host(s) on
+your wireless network.
+
+To enable bridged networking, all you need to do is to open the Settings 
+dialog of a virtual machine, go to the "Network" page and select "Bridged network" 
+in the drop down list for the "Attached to" field. Finally, select desired host 
+interface from the list at the bottom of the page, which contains the physical network 
+interfaces of your systems. On a typical MacBook, for example, this will allow you to 
+select between "en1: AirPort" (which is the wireless interface) and "en0: Ethernet", 
+which represents the interface with a network cable.
+
+NETWORK SETTINGS IN VMWWARE PLAYER / NAT NETWORKING
+HOWTO REACH OPENERP APPLIANCE ON A VMWARE PLAYER MACHINE FROM WINDOWS HOST
+==========================================================================
+Set your VMware Player to use "NAT" in "Virtual Machine Settings" >> "Network 
+Adapter". This is the default network configuration in VMware.
+
+NAT is recommended in VMware when you don’t require to connect from an 
+external machine in your LAN to your virtual machine. User programs like 
+Firefox or ssh can operate through NAT.
+
+NETWORK SETTINGS IN VMWWARE PLAYER / BRIDGED NETWORKING
+HOWTO REACH OPENERP APPLIANCE ON A VMWARE PLAYER MACHINE FROM YOUR LAN
+=======================================================================
+Set your VMware Player to use "Bridged" in "Virtual Machine Settings" >> 
+"Network Adapter"
+
+NETWORK SETTINGS IN LINUX'S VIRT-MANAGER / NAT NETWORKING
+HOWTO REACH OPENERP APPLIANCE ON A KERNEL VIRTUAL MACHINE (KVM) FROM LINUX HOST
+===============================================================================
+Set your virt-manager to use "NAT" in "Preferences". This is the default 
+network configuration in KVM/virt-manager.
+
+
+More info at openerpappliance.com
+---
+Inaki Fernandez
+Senior IT Systems Engineer
+twitter.com/linuxunixmadrid
+openerpappliance@gmail.com
+openerpappliance.com

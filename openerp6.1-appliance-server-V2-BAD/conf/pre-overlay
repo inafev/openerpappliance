@@ -1,0 +1,106 @@
+#!/bin/bash -ex
+
+PSQLRELEASE=8.4
+PASSWVAR="openerp"
+PYTHONRELEASE=python2.6
+UBUNTURELEASE=10.04
+INSTALLPATH=/usr
+SITEPACKAGESPATH=$INSTALLPATH/lib/$PYTHONRELEASE/site-packages
+OPENERPSERVERPATH=$SITEPACKAGESPATH/openerp-server
+ADDONSPATH=$OPENERPSERVERPATH/addons/
+OPENERPSERVERWRONGPATH=/nobugnoworkaround
+MYDESKTOP=/home/openerp
+#OPENERPPASSWORD=$(mcookie)
+OPENERPPASSWORD="openerp"
+USER=openerp
+STABLETRUNK=trunk
+#STABLETRUNKVAR=6.1
+RELEASE=6.1.0-rc1
+PATH=/usr/bin:/sbin:/bin:/usr/sbin
+
+
+echo "------------------------------------"
+echo "Enabling ubuntu multiverse repository"
+echo "------------------------------------"
+APT_SOURCES=/etc/apt/sources.list.d
+sed -i "/lucid multiverse/ s/# //" $APT_SOURCES/sources.list
+sed -i "/lucid-updates multiverse/ s/# //" $APT_SOURCES/sources.list
+sed -i "/lucid-security multiverse/ s/# //" $APT_SOURCES/security.sources.list
+apt-get update
+#########################################################################
+# V6.1
+#########################################################################
+# en realidad bzr 2.4 lo necesito sólo para el nuevo instalador para desarrollo:
+apt-get install -y python-software-properties  # add-apt-repository
+add-apt-repository ppa:bzr/ppa
+apt-get update
+apt-get install -y bzr  # (obtengo bzr 2.4.x)
+apt-get install -y python-setuptools # easy_install
+easy_install pip
+/usr/local/bin/pip install werkzeug # en lugar de "apt-get install python-werkzeug"
+easy_install Babel
+#########################################################################
+apt-get install -y sudo
+apt-get install -y make
+sed -i 's/\(local[[:space:]]*all[[:space:]]*all[[:space:]]*\)\(ident[[:space:]]*sameuser\)/\1trust/g' /etc/postgresql/$PSQLRELEASE/main/pg_hba.conf
+
+#Restart Postgres:
+/etc/init.d/postgresql-$PSQLRELEASE start
+#Create a user account called openerp with password “openerp” and with privileges to create Postgres databases:
+# su postgres
+#createuser openerp -P
+#    Enter password for new role: (openerp)
+#    Enter it again:
+#    Shall the new role be a superuser? (y/n) n
+#    Shall the new role be allowed to create databases? (y/n) y
+#    Shall the new role be allowed to create more new roles? (y/n) n
+
+sudo -u postgres createuser openerp --no-superuser --createdb --no-createrole 
+sudo -u postgres psql template1 -U postgres -c "alter user openerp with password '$PASSWVAR'"
+
+echo "------------------------------------"
+echo "Downloading OPENERP"
+echo "------------------------------------"
+
+#apt-get clean
+#apt-get -f update
+#apt-get install -y bzr
+
+#/usr/sbin/adduser --quiet --system --group openerp 
+useradd -c "openerp user" -m -s /bin/bash openerp
+# Setting up openerp password
+echo "openerp:$OPENERPPASSWORD" | chpasswd
+#echo "openerp:openerp" | chpasswd
+
+chmod 440 /etc/sudoers
+chown root.root /etc/sudoers
+# Add a existing openerp user to existing group adm (adm in /etc/sudoers):
+usermod -a -G adm openerp
+
+mkdir -p /home/openerp/workspace
+cd /home/openerp/workspace/
+#bzr branch -rtag:$RELEASE lp:openobject-server/$STABLETRUNKLINK openerp-server 
+bzr branch -rtag:$RELEASE lp:~openerp/openobject-server/$STABLETRUNK openerp-server
+#bzr branch -rtag:$RELEASE lp:openobject-client/$STABLETRUNKLINK openerp-client 
+bzr branch -rtag:$RELEASE lp:~openerp/openobject-client/$STABLETRUNK openerp-client 
+#bzr branch -rtag:$RELEASE lp:openobject-client-web/$STABLETRUNKLINK openerp-web 
+bzr branch -rtag:$RELEASE lp:~openerp/openerp-web/$STABLETRUNK openerp-web
+#bzr branch -rtag:$RELEASE lp:openobject-addons/$STABLETRUNKLINK addons 
+bzr branch -rtag:$RELEASE lp:~openerp/openobject-addons/$STABLETRUNK addons                                                                                                  
+
+bzr branch lp:openobject-addons/extra-$STABLETRUNK extra-addons 
+#bzr branch lp:magentoerpconnect/openerp6-module magentoerpconnect
+bzr branch lp:magentoerpconnect/$STABLETRUNK magentoerpconnect
+#####bzr branch lp:openerp-spain/$STABLETRUNK openerp-spain
+
+
+# Following line fixes this bug: "Import module menu is missing" https://bugs.launchpad.net/openobject-server/+bug/506662?comments=all
+#sed -i "s/\(\"active\".*\)\(True,\)/\1False,/g" /home/openerp/workspace/extra-addons/use_control/__terp__.py 
+
+###################################################################################################
+# Workaround for this error 'No handlers could be found for logger “bzr”' when user runs bzr after this script is executed
+# This usually just means you don’t have permission to write to the log. Sometimes it ends up belonging to root (because of  bzr)
+chown $USER ~/.bzr.log
+chmod 644 ~/.bzr.log
+
+chown -R openerp.openerp /home/openerp

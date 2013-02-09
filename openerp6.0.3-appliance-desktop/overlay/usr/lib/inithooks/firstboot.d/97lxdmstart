@@ -1,0 +1,6 @@
+#!/bin/bash -e
+# we can now start lxdm once the first boot init scripts have run
+[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
+mv /etc/init/lxdm.conf.nostart /etc/init/lxdm.conf
+service lxdm start
+
