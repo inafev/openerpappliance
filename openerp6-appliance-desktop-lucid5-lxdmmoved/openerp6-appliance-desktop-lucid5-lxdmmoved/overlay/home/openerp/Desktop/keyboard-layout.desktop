@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Keyboard
+Comment=Change keyboard layout
+Exec=gnome-keyboard-properties
+Icon=/usr/local/openerp/pixmaps/keyboard.png
+MimeType=text/plain
+Terminal=false
+Type=Application
+MimeType=text/plain
+Categories=Utility

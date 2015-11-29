@@ -1,0 +1,230 @@
+#!/bin/bash -ex
+
+HOSTNAME=openerp5
+# set hostname
+echo "$HOSTNAME" > /etc/hostname
+sed -i "s|127.0.1.1 \(.*\)|127.0.1.1 $HOSTNAME|" /etc/hosts
+
+PSQLRELEASE=8.3
+PYTHONRELEASE=python2.5
+UBUNTURELEASE=8.04
+INSTALLPATH=/usr
+#SITEPACKAGESPATH=$INSTALLPATH/lib/$PYTHONRELEASE/site-packages
+#OPENERPSERVERPATH=$SITEPACKAGESPATH/openerp-server
+#ADDONSPATH=$OPENERPSERVERPATH/addons/
+SITEPACKAGESPATH=/home/openerp/production/site-packages/
+OPENERPSERVERPATH=/home/openerp/production/openerp-server
+ADDONSPATH=$OPENERPSERVERPATH/bin/addons/
+OPENERPSERVERWRONGPATH=/nobugnoworkaround
+MYDESKTOP=/home/openerp
+PASSWVAR="openerp"
+#OPENERPPASSWORD=$(mcookie)
+OPENERPPASSWORD="openerp"
+USER=openerp
+STABLETRUNKLINK=5.0
+STABLETRUNKVAR=stable
+PATH=/usr/bin:/sbin:/bin:/usr/sbin
+
+# BZR 2.0+ INSTALLATION (ubuntu 8.04 provides bzr 1.6)
+# We are going to upgrade the repositories format to the 2a version. This will hopefully reduce the size of the checkout, speed up some operations and make it possible to use stacked branches reliably.
+# From now on, Bazaar 2.0+ will be required to contribute to OpenERP. 
+# http://julienthewys.blogspot.com/2010/02/code-repository-upgrade.html
+echo "deb http://ppa.launchpad.net/bzr/ubuntu hardy main" >> /etc/apt/sources.list.d/sources.list
+apt-get update
+apt-get install -y gnupg
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C6C1EFD
+apt-get update
+apt-get update
+echo "------------------------------------"
+echo "installing needed packages"
+echo "------------------------------------"
+
+#apt-get clean
+#apt-get -f update
+apt-get install -y bzr
+
+#/usr/sbin/adduser --quiet --system --group openerp 
+useradd -c "openerp user" -m -s /bin/bash openerp
+# Setting up openerp password
+echo "openerp:$OPENERPPASSWORD" | chpasswd
+#echo "openerp:openerp" | chpasswd
+
+chmod 440 /etc/sudoers
+chown root.root /etc/sudoers
+# Add a existing openerp user to existing group adm (adm in /etc/sudoers):
+usermod -a -G adm openerp
+
+mkdir -p /home/openerp/production
+cd /home/openerp/production/
+bzr branch lp:openobject-server/$STABLETRUNKLINK openerp-server 
+bzr branch lp:openobject-client/$STABLETRUNKLINK openerp-client 
+bzr branch lp:openobject-client-web/$STABLETRUNKLINK openerp-web 
+bzr branch lp:openobject-addons/$STABLETRUNKLINK addons 
+bzr branch lp:openobject-addons/extra-$STABLETRUNKLINK extra-addons 
+# Following line fixes this bug: "Import module menu is missing" https://bugs.launchpad.net/openobject-server/+bug/506662?comments=all
+sed -i "s/\(\"active\".*\)\(True,\)/\1False,/g" /home/openerp/production/extra-addons/use_control/__terp__.py 
+
+###################################################################################################
+# Workaround for this error 'No handlers could be found for logger “bzr”' when user runs bzr after this script is executed
+# This usually just means you don’t have permission to write to the log. Sometimes it ends up belonging to root (because of  bzr)
+chown $USER ~/.bzr.log
+chmod 644 ~/.bzr.log
+
+chown -R openerp.openerp /home/openerp
+chmod 740 /home/openerp/bin/openerp-updater.sh
+
+cd /home/openerp/production/openerp-server
+#python setup.py install
+
+cd /home/openerp/production/openerp-client
+#python setup.py install
+cd /home/openerp/production/openerp-web
+#easy_install -U openerp-web
+mkdir -p $SITEPACKAGESPATH  
+export PYTHONPATH=$SITEPACKAGESPATH         
+easy_install --install-dir $SITEPACKAGESPATH -U openerp-web
+
+#mkdir -p $ADDONSPATH
+#cp -ru /home/openerp/production/addons/* $ADDONSPATH
+#cp -ru /home/openerp/production/extra-addons/* $ADDONSPATH
+ln -sf /home/openerp/production/addons/* $ADDONSPATH
+ln -sf /home/openerp/production/extra-addons/* $ADDONSPATH
+# ln without "--force"
+# ln: creating symbolic link `/usr/lib/python2.5/site-packages/openerp-server/addons/base_module_merge': File exists
+
+#if [ "$UBUNTURELEASE" = "9.10" -a -d $OPENERPSERVERWRONGPATH/addons ]; then
+# Adding workaround for bug in /home/openerp/openerp-server/setup.py that puts import_xml.rng and base.sql into the wrong location
+# cp -ru $OPENERPSERVERWRONGPATH/* $OPENERPSERVERPATH/
+# chown -R openerp.root $ADDONSPATH
+# chmod 755 $ADDONSPATH
+#fi
+
+chown -R openerp.root $ADDONSPATH
+
+#####################
+# Extending Open ERP
+# To extend Open ERP you’ll need to copy modules into the addons directory. That’s in your server’s openerp-server directory (which differs between Windows, 
+# Mac and some of the various Linux distributions and not available at all in the Windows all-in-one installer).
+# You can add modules in two main ways – through the server, or through the client.
+# To add new modules through the server is a conventional systems administration task. As rootuser or other suitable user, you’d put the module in the 
+# addons directory and change its permissions to match those of the other modules.
+# To add new modules through the client you must first change the permissions of the addonsdirectory of the server, so that it is writable by the server. 
+# That will enable you to install Open ERP modules using the Open ERP client (a task ultimately carried out on the application server by the server software).
+#
+chmod 755 $ADDONSPATH
+###########################################
+# Document Management Permissions: http://openobject.com/forum/topic13021.html?highlight=ftp
+#  chown openerp $INSTALLPATH/lib/$PYTHONRELEASE/site-packages/openerp-server
+chown openerp $OPENERPSERVERPATH
+#
+#echo "# DON'T PRESS ACCEPT/OK !!. Adding openerp-server and openerp-web init scripts and config files";
+#####################################################################################
+# openerp-server init script
+#####################################################################################
+chmod 0755 /etc/init.d/openerp-server
+#Create /var/log/openerp with proper ownership:
+mkdir -p /var/log/openerp
+touch /var/log/openerp/openerp.log
+chown -R openerp.root /var/log/openerp/
+
+# ubuntu 9.10:
+#sed -i "s#/usr/bin/openerp-server#$INSTALLPATH/bin/openerp-server#g" /etc/init.d/openerp-server
+#####################################################################################
+# openerp-server config file
+#####################################################################################
+chown root.root /etc/openerp-server.conf
+chmod 644 /etc/openerp-server.conf
+
+sed -i "s/db_password =/db_password = $PASSWVAR/g" /etc/openerp-server.conf
+
+#####################################################################################
+# openerp-web init script and openerp-web.cfg
+#####################################################################################
+# cp /usr/lib/python2.5/site-packages/openerp_web-5.0.1_0-py2.5.egg/scripts/openerp-web /etc/init.d/
+chmod 0755 /etc/init.d/openerp-web
+#sed -i "s#/usr/bin/openerp-web#$INSTALLPATH/bin/openerp-web#g" /etc/init.d/openerp-web
+
+chown root.root /etc/openerp-web.cfg
+chmod 644 /etc/openerp-web.cfg
+#Create /var/log/openerp-web.log with proper ownership:
+mkdir -p /var/log/openerp-web
+touch /var/log/openerp-web/access.log
+touch /var/log/openerp-web/error.log
+chown -R openerp.root /var/log/openerp-web/
+
+#echo "# DON'T PRESS ACCEPT/OK !!. Updating RC Services";
+#Now run following command to start the OpenERP Web automatically on system startup (Debian/Ubuntu):
+update-rc.d openerp-server start 21 2 3 4 5 . stop 21 0 1 6 .
+update-rc.d openerp-web start 70 2 3 4 5 . stop 20 0 1 6 .
+
+#########################################################################################################
+# FIREWALL:
+#apt-get install -y ufw
+#ufw enable
+#ufw allow ssh
+#ufw allow http
+#ufw allow https
+## OpenERP port (GTK client):
+#ufw allow 8069/tcp 
+## OpenERP port (GTK client):
+#ufw allow 8070/tcp 
+## Turnkeylinux Webconsole ports:
+#ufw allow 12320/tcp 
+#ufw allow 12321/tcp 
+#ufw allow 12322/tcp 
+#ufw allow 12323/tcp 
+
+#/etc/init.d/openerp-server start
+#/etc/init.d/openerp-web start
+
+#################################################################################
+# Apache Modules:
+a2enmod ssl
+# We enable openerpweb site after creating "/etc/apache2/sites-available/openerpweb" file (not available in Ubuntu8.04)
+a2ensite openerpweb
+a2enmod rewrite
+a2enmod suexec
+a2enmod include
+a2enmod proxy
+a2enmod proxy_http
+a2enmod proxy_connect
+a2enmod proxy_ftp
+a2enmod headers
+
+
+###########################################################################################################################################################
+#http://swiss.ubuntuforums.org/showthread.php?p=6965982
+#OK, I just figured this one out on my 8.04 install, should be the same for other versions. I'm using Likewise-Open, so the account I 
+#log in with every day is not the user account I created during the OS install.
+#I ran in to the same problem reported at the beginning of the thread: Synaptic missing from menu; menu editor clears the checkbox for it as 
+#soon as I check it. I also noticed that Synaptic and some other programs were listed in the menu editor in italics, and any program in italics could 
+#not be checked either.
+#The problem is that these are administrative programs, and the system will not give access to them to most users. Only users who are members of the 
+#"adm" group can have these programs shown on their menus.
+#I tried to use the "Users and Groups" program to fix this, but it doesn't show Likewise Active Directory users. (If you're having this problem and not 
+#using Likewise-Open, then you can probably fix it in Users and Groups.)
+#To fix it for a Likewise user, you have to add that user to the group manually. I edited the /etc/group file, and added a comma, my domain, a backslash, 
+#and my user name to the end of the the line that starts with "adm:". So now it looks like this:
+#adm:x:4:paul,MYDOMAIN\domainuser
+#The next time I logged in after that, Synaptic (and the others) were back on my menu.
+
+# Añado usuario openerp al grupo admin para poder ver el icono de Synaptic en el desktop
+# Add a existing user to existing group
+# Ver permisos en /etc/PolicyKit/PolicyKit.conf 
+####################################################
+# La siguiente líne la que comentado porque quizás mejor que el usuario root sea el único con privilegios para instalar paquetes
+###################################################### usermod -a -G admin openerp
+# Los siguientes paquetes incluyen el comando update-menus, no necesario tras solucionar el problema de Synaptic con el comando anterior
+# apt-get install -y menu menu-xdg
+# update-menus 
+###########################################################################################################################################################
+
+apt-get update
+apt-get -y upgrade
+apt-get clean
+
+#Stop postgresql daemon
+/etc/init.d/postgresql-$PSQLRELEASE stop
+
+mv /home/openerp/bash_profile /home/openerp/.bash_profile
+mv /home/openerp/bashrc /home/openerp/.bashrc

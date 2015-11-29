@@ -1,0 +1,99 @@
+mkdir -p /home/openerp/production
+cd /home/openerp/production/
+bzr branch lp:openerp
+cd openerp/
+./bzr_set.py 
+
+
+/home/openerp/production/openerp/server/bin/openerp-server.py 
+------------------------------------------
+
+--backtitle backtitle
+
+zenity --entry --title="Superuser privileges" --text="Enter your user password (sudo):" --hide-text | sudo -S echo
+
+
+: ${DIALOG=dialog}
+exec 3>&1
+RESULT=`$DIALOG --title "Superuser privileges" --clear \
+        --inputbox "Enter your user password (sudo): \n\n
+Enter your user password (sudo):" 16 51 2>&1 1>&3`
+retval=$?
+exec 3>&-
+case $retval in
+  0)
+    echo "Input string is $RESULT";;
+  1)
+    echo "Cancel pressed.";;
+  255)
+    if test -n "$RESULT" ; then
+      echo "$RESULT"
+    else
+      echo "ESC pressed."
+    fi
+    ;;
+esac
+---------------------------------------------------------------------------------------------------
+openerp@openerp5:~$ cat ./inaki2 
+#! /bin/sh
+# $Id: mixedgauge,v 1.4 2007/02/26 23:10:30 tom Exp $
+: ${DIALOG=dialog}
+background="An Example of --mixedgauge usage"
+SERVERSTATUS=7
+CLIENTSTATUS=7
+WEBSTATUS=7
+ADDONSSTATUS=7
+EXTRAADDONSSTATUS=7
+
+for i in 5 10 20 30 40 50 60 70 80 90 100
+do
+$DIALOG --backtitle "$background" \
+        --title "Mixed gauge demonstration" \
+        --mixedgauge "This is a prompt message,\nand this is the second line." \
+                0 0 $i \
+                "OpenERP Server"        "$SERVERSTATUS" \
+                "OpenERP Client"        "$CLIENTSTATUS" \
+                "OpenERP Web"   "$WEBSTATUS" \
+                "OpenERP addons"        "$ADDONSSTATUS" \
+                "OpenERP extra-addons"  "$EXTRAADDONSSTATUS" \
+                #"Process nine" "-$i"
+# break
+sleep 1 
+case $i in
+  5)
+   cd /home/openerp/openerp-server;
+   sudo bzr missing > /tmp/check4newrevisions.txt;
+   SERVERSTATUS=3;
+   ;;
+  20)
+   cd /home/openerp/openerp-client;
+   sudo bzr missing > /tmp/check4newrevisions.txt;
+   CLIENTSTATUS=3;
+   ;;
+  40)
+   cd /home/openerp/openerp-web;
+   sudo bzr missing > /tmp/check4newrevisions.txt;
+   WEBSTATUS=3;
+   ;;
+  60)
+   cd /home/openerp/addons;
+   sudo bzr missing > /tmp/check4newrevisions.txt;
+   ADDONSSTATUS=3;
+   ;;
+  80)
+   cd /home/openerp/extra-addons;
+   sudo bzr missing > /tmp/check4newrevisions.txt;
+   EXTRAADDONSSTATUS=3;
+   ;;
+esac
+done
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+dialog --backtitle "Superuser privileges" "Enter your user password (sudo):" 

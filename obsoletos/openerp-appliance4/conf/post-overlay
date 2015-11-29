@@ -1,0 +1,236 @@
+#!/bin/bash -ex
+
+HOSTNAME=openerp5
+# set hostname
+echo "$HOSTNAME" > /etc/hostname
+sed -i "s|127.0.1.1 \(.*\)|127.0.1.1 $HOSTNAME|" /etc/hosts
+
+# Antes de ejecutar el script, el siguiente fichero debe tener una entrada específica para bzr:
+#/etc/apt/preferences 
+#Package: casper turnkey-* webmin* vim* busybox-initramfs* di-live* confconsole* python-dialog* 
+#Pin: release o=turnkeylinux
+#Pin-Priority: 999
+
+#Package: bzr
+#Pin: release o=ppa.launchpad.net 
+#Pin: version 2*
+#Pin-Priority: 900
+
+# La sig config dejó de funcionar de un día para otro:
+##Package: bzr
+##Pin: release o=LP-PPA-bzr
+##Pin-Priority: 900
+
+#Package: phppgadmin*
+#Pin: release o=Debian
+#Pin-Priority: 700
+
+#Package: *
+#Pin: release o=Ubuntu
+#Pin-Priority: 650
+
+#Package: *
+#Pin: release o=Debian
+#Pin-Priority: 600
+#####################################################################################################
+
+# Ubuntu 8.04, python 2.5
+PSQLRELEASE=8.3
+PYTHONRELEASE=python2.5
+UBUNTURELEASE=8.04
+INSTALLPATH=/usr
+SITEPACKAGESPATH=$INSTALLPATH/lib/$PYTHONRELEASE/site-packages
+OPENERPSERVERPATH=$SITEPACKAGESPATH/openerp-server
+ADDONSPATH=$OPENERPSERVERPATH/addons/
+OPENERPSERVERWRONGPATH=/nobugnoworkaround
+MYDESKTOP=/home/openerp
+PASSWVAR="openerp"
+#OPENERPPASSWORD=$(mcookie)
+OPENERPPASSWORD="openerp"
+USER=openerp
+STABLETRUNKLINK=5.0
+STABLETRUNKVAR=stable
+PATH=/usr/bin:/sbin:/bin:/usr/sbin
+
+# BZR 2.0+ INSTALLATION (ubuntu 8.04 provides bzr 1.6)
+# We are going to upgrade the repositories format to the 2a version. This will hopefully reduce the size of the checkout, speed up some operations and make it possible to use stacked branches reliably.
+# From now on, Bazaar 2.0+ will be required to contribute to OpenERP. 
+# http://julienthewys.blogspot.com/2010/02/code-repository-upgrade.html
+echo "deb http://ppa.launchpad.net/bzr/ubuntu hardy main" >> /etc/apt/sources.list.d/sources.list
+apt-get update
+apt-get install -y gnupg
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8C6C1EFD
+apt-get update
+apt-get update
+echo "------------------------------------"
+echo "installing needed packages"
+echo "------------------------------------"
+
+#apt-get clean
+#apt-get -f update
+apt-get install -y bzr
+
+#/usr/sbin/adduser --quiet --system --group openerp 
+useradd -c "openerp user" -m -s /bin/bash openerp
+# Setting up openerp password
+echo "openerp:$OPENERPPASSWORD" | chpasswd
+#echo "openerp:openerp" | chpasswd
+
+chmod 440 /etc/sudoers
+chown root.root /etc/sudoers
+# Add a existing openerp user to existing group adm (adm in /etc/sudoers):
+usermod -a -G adm openerp
+
+cd /home/openerp
+bzr branch lp:openobject-server/$STABLETRUNKLINK openerp-server 
+bzr branch lp:openobject-client/$STABLETRUNKLINK openerp-client 
+bzr branch lp:openobject-client-web/$STABLETRUNKLINK openerp-web 
+bzr branch lp:openobject-addons/$STABLETRUNKLINK addons 
+bzr branch lp:openobject-addons/extra-$STABLETRUNKLINK extra-addons 
+# Following line fixes this bug: "Import module menu is missing" https://bugs.launchpad.net/openobject-server/+bug/506662?comments=all
+sed -i "s/\(\"active\".*\)\(True,\)/\1False,/g" /home/openerp/extra-addons/use_control/__terp__.py 
+
+###################################################################################################
+# Workaround for this error 'No handlers could be found for logger “bzr”' when user runs bzr after this script is executed
+# This usually just means you don’t have permission to write to the log. Sometimes it ends up belonging to root (because of  bzr)
+chown $USER ~/.bzr.log
+chmod 644 ~/.bzr.log
+
+chown -R openerp.openerp /home/openerp
+chmod 740 /home/openerp/openerp-updater.sh
+
+cd /home/openerp/openerp-server
+python setup.py install
+
+cd /home/openerp/openerp-client
+python setup.py install
+cd /home/openerp/openerp-web
+easy_install -U openerp-web
+
+cd /home/openerp
+mkdir -p $ADDONSPATH
+cp -ru /home/openerp/addons/* $ADDONSPATH
+cp -ru /home/openerp/extra-addons/* $ADDONSPATH
+
+#if [ "$UBUNTURELEASE" = "9.10" -a -d $OPENERPSERVERWRONGPATH/addons ]; then
+# Adding workaround for bug in /home/openerp/openerp-server/setup.py that puts import_xml.rng and base.sql into the wrong location
+# cp -ru $OPENERPSERVERWRONGPATH/* $OPENERPSERVERPATH/
+# chown -R openerp.root $ADDONSPATH
+# chmod 755 $ADDONSPATH
+#fi
+
+chown -R openerp.root $ADDONSPATH
+
+#####################
+# Extending Open ERP
+# To extend Open ERP you’ll need to copy modules into the addons directory. That’s in your server’s openerp-server directory (which differs between Windows, 
+# Mac and some of the various Linux distributions and not available at all in the Windows all-in-one installer).
+# You can add modules in two main ways – through the server, or through the client.
+# To add new modules through the server is a conventional systems administration task. As rootuser or other suitable user, you’d put the module in the 
+# addons directory and change its permissions to match those of the other modules.
+# To add new modules through the client you must first change the permissions of the addonsdirectory of the server, so that it is writable by the server. 
+# That will enable you to install Open ERP modules using the Open ERP client (a task ultimately carried out on the application server by the server software).
+#
+chmod 755 $ADDONSPATH
+###########################################
+# Document Management Permissions: http://openobject.com/forum/topic13021.html?highlight=ftp
+#  chown openerp $INSTALLPATH/lib/$PYTHONRELEASE/site-packages/openerp-server
+chown openerp $OPENERPSERVERPATH
+#
+#echo "# DON'T PRESS ACCEPT/OK !!. Adding openerp-server and openerp-web init scripts and config files";
+#####################################################################################
+# openerp-server init script
+#####################################################################################
+#cp /tmp/openerp-server /etc/init.d/
+chmod 0755 /etc/init.d/openerp-server
+#Create /var/log/openerp with proper ownership:
+mkdir -p /var/log/openerp
+touch /var/log/openerp/openerp.log
+chown -R openerp.root /var/log/openerp/
+
+# ubuntu 9.10:
+#sed -i "s#/usr/bin/openerp-server#$INSTALLPATH/bin/openerp-server#g" /etc/init.d/openerp-server
+
+#####################################################################################
+# openerp-server config file
+#####################################################################################
+#cp /tmp/openerp-server.conf /etc/
+chown root.root /etc/openerp-server.conf
+chmod 644 /etc/openerp-server.conf
+
+sed -i "s/db_password =/db_password = $PASSWVAR/g" /etc/openerp-server.conf
+
+#####################################################################################
+# openerp-web init script and openerp-web.cfg
+#####################################################################################
+# cp /usr/lib/python2.5/site-packages/openerp_web-5.0.1_0-py2.5.egg/scripts/openerp-web /etc/init.d/
+chmod 0755 /etc/init.d/openerp-web
+
+#sed -i "s#/usr/bin/openerp-web#$INSTALLPATH/bin/openerp-web#g" /etc/init.d/openerp-web
+
+chown root.root /etc/openerp-web.cfg
+chmod 644 /etc/openerp-web.cfg
+
+#Create /var/log/openerp-web.log with proper ownership:
+mkdir -p /var/log/openerp-web
+touch /var/log/openerp-web/access.log
+touch /var/log/openerp-web/error.log
+chown -R openerp.root /var/log/openerp-web/
+
+#echo "# DON'T PRESS ACCEPT/OK !!. Updating RC Services";
+#Now run following command to start the OpenERP Web automatically on system startup (Debian/Ubuntu):
+update-rc.d openerp-server start 21 2 3 4 5 . stop 21 0 1 6 .
+update-rc.d openerp-web start 70 2 3 4 5 . stop 20 0 1 6 .
+
+#########################################################################################################
+#if [ "$FIREWALLINSTALL" = "y" ]; then 
+#echo "# DON'T PRESS ACCEPT/OK !!. Enabling Firewall settings";
+# FIREWALL:
+# ufw enable
+# ufw allow ssh
+
+#if [ "$APACHEHTTPS" = "y" ]; then 
+# ufw allow http
+# ufw allow https
+#else
+# ufw allow 8080/tcp 
+#fi
+# OpenERP port (GTK client):
+# ufw allow 8069/tcp 
+# OpenERP port (GTK client):
+# ufw allow 8070/tcp 
+#fi
+
+#/etc/init.d/openerp-server start
+#/etc/init.d/openerp-web start
+
+#################################################################################
+# Apache Modules:
+a2enmod ssl
+# We enable openerpweb site after creating "/etc/apache2/sites-available/openerpweb" file (not available in Ubuntu8.04)
+a2ensite openerpweb
+a2enmod rewrite
+a2enmod suexec
+a2enmod include
+a2enmod proxy
+a2enmod proxy_http
+a2enmod proxy_connect
+a2enmod proxy_ftp
+a2enmod headers
+
+# VNC Server (no in ubuntu server)
+#apt-get install -y vino (ó x11vnc)
+
+apt-get update
+apt-get -y upgrade
+
+apt-get clean
+
+#add usage information
+#USAGE=/etc/confconsole/usage.txt
+#sed -i -e '6 a OpenERP: https://$ipaddr:12323' $USAGE
+#delete the extra blank line so everything fits on a single screen
+#sed -i '9 d' $USAGE
+
+#Stop postgresql daemon
+/etc/init.d/postgresql-$PSQLRELEASE stop

@@ -1,0 +1,16 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+alias openerp-client='/home/openerp/production/openerp-client/bin/openerp-client.py'
+alias openerp-update.sh='openerp-updater.sh'
+
+PATH=$PATH:$HOME/bin
+
+export PATH
+unset USERNAME
+ 

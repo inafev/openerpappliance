@@ -1,0 +1,5 @@
+#!/bin/bash -e
+# reconfigure locales
+[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
+# No funciona la config de keyboard en fistboot con ó sin security-updates:
+# dpkg-reconfigure console-setup

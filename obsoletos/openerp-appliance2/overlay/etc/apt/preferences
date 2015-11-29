@@ -1,0 +1,20 @@
+Package: casper turnkey-* webmin* vim* busybox-initramfs* di-live* confconsole* python-dialog* 
+Pin: release o=turnkeylinux
+Pin-Priority: 999
+
+Package: bzr
+Pin: release o=ppa.launchpad.net 
+Pin: version 2*
+Pin-Priority: 900
+
+Package: phppgadmin*
+Pin: release o=Debian
+Pin-Priority: 700
+
+Package: *
+Pin: release o=Ubuntu
+Pin-Priority: 650
+
+Package: *
+Pin: release o=Debian
+Pin-Priority: 600

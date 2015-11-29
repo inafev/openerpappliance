@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Keyboard Settings
+Comment=Change keyboard layout and xserver settings
+Exec=lxterminal --command "sudo dpkg-reconfigure xserver-xorg"
+Icon=/usr/local/openerp/pixmaps/keyboard.png
+MimeType=text/plain
+Terminal=false
+Type=Application
+MimeType=text/plain
+Categories=Settings;

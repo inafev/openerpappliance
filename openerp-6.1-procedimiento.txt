@@ -1,0 +1,130 @@
+
+
+apt-get install python-software-properties  
+add-apt-repository ppa:bzr/ppa
+apt-get update
+apt-get install bzr  (obtengo bzr 2.4.x)
+apt-get install make
+make init-trunk
+
+apt-get install python-psycopg2
+apt-get install python-lxml
+apt-get install python-yaml -y
+apt-get install python-reportlab
+apt-get install python-mako
+apt-get install python-pychart 
+apt-get install python-pybabel
+
+apt-get install python-openid
+
+apt-get install libapache2-mod-wsgi
+apt-get install python-tz
+apt-get install python-imaging 
+apt-get install python-setuptools
+
+easy_install pip
+pip install werkzeug # en lugar de "apt-get install python-werkzeug"
+
+apt-get install python-dateutil
+
+
+
+openerp@lapp ~$ bzr cat -d lp:~openerp-dev/openerp-tools/trunk setup.sh | sh
+You have not informed bzr of your Launchpad ID, and you must do this to
+write to Launchpad or access private data.  See "bzr help launchpad-login".
+You have not informed bzr of your Launchpad ID, and you must do this to
+write to Launchpad or access private data.  See "bzr help launchpad-login".
+You have not informed bzr of your Launchpad ID, and you must do this to
+write to Launchpad or access private data.  See "bzr help launchpad-login".
+to setup your development environment and download the sources, type
+- for OpenERP v6.0:
+make init-v60
+- for OpenERP trunk:
+make init-trunk
+- for OpenERP latest stable and trunk:
+make init
+openerp@lapp ~$ make init-trunk
+# Init repository
+mkdir -p dump
+for dir in addons client client-web server misc web; do [ -d ${dir} ] || bzr init-repository ${dir}; done
+Shared repository with trees (format: 2a)
+Location:
+  shared repository: addons
+Shared repository with trees (format: 2a)
+Location:
+  shared repository: client
+Shared repository with trees (format: 2a)
+Location:
+  shared repository: client-web
+Shared repository with trees (format: 2a)
+Location:
+  shared repository: server
+Shared repository with trees (format: 2a)
+Location:
+  shared repository: misc
+Shared repository with trees (format: 2a)
+Location:
+  shared repository: web
+# Init repository and download sources for trunk
+[ -d addons/trunk ]     || bzr branch lp:~openerp/openobject-addons/trunk addons/trunk
+You have not informed bzr of your Launchpad ID, and you must do this to
+write to Launchpad or access private data.  See "bzr help launchpad-login".
+Branched 6341 revision(s).                                                                                                      
+[ -d client/trunk ]     || bzr branch lp:~openerp/openobject-client/trunk client/trunk
+You have not informed bzr of your Launchpad ID, and you must do this to
+write to Launchpad or access private data.  See "bzr help launchpad-login".
+Branched 2031 revision(s).                                                                                                      
+[ -d server/trunk ]     || bzr branch lp:~openerp/openobject-server/trunk server/trunk
+You have not informed bzr of your Launchpad ID, and you must do this to
+write to Launchpad or access private data.  See "bzr help launchpad-login".
+Branched 3963 revision(s).                                                                                                      
+[ -d web/trunk ]        || bzr branch lp:~openerp/openerp-web/trunk web/trunk
+You have not informed bzr of your Launchpad ID, and you must do this to
+write to Launchpad or access private data.  See "bzr help launchpad-login".
+Branched 1966 revision(s).                                                                                                      
+openerp@lapp ~$      
+
+
+
+-------------------------------
+openerpappliance.com : OpenERP 6.1rc Server Appliance - January 14th 2012
+
+
+
+File size of 1,1GB
+
+Kind regards,
+
+Inaki Fernandez
+openerpappliance@gmail.com
+twitter.com/inakifv
+openerpappliance.com
+
+http://dl.dropbox.com/u/6347216/openerpappliance-server-v6.1rc-Jan14.iso
+
+
+<a href="https://www.e-junkie.com/ecom/gb.php?c=cart&i=1044233&cl=144065&ejc=2" target="ej_ejc" class="ec_ejc_thkbx" onClick="javascript:return EJEJC_lc(this);"><img src="http://www.e-junkie.com/ej/ej_add_to_cart.gif" border="0" alt="Add to Cart"/></a>
+
+<a href="https://www.e-junkie.com/ecom/gb.php?c=cart&i=1044233&cl=144065&ejc=2" target="ej_ejc" class="ec_ejc_thkbx" onClick="javascript:return EJEJC_lc(this);"><img src="http://www.e-junkie.com/ej/ej_add_to_cart.gif" border="0" alt="Add to Cart"/></a>
+
+
+-----------
+http://dl.dropbox.com/u/6347216/openerpappliance-server-v6.1rc-Jan17.iso
+
+
+<a href="https://www.e-junkie.com/ecom/gb.php?c=cart&i=1044233&cl=144065&ejc=2" target="ej_ejc" class="ec_ejc_thkbx" onClick="javascript:return EJEJC_lc(this);"><img src="http://www.e-junkie.com/ej/ej_add_to_cart.gif" border="0" alt="Add to Cart"/></a>
+
+
+VIRTUALIZATION TIPS, CLOUD TECHNOLOGIES AND HOSTING PROVIDERS:
+
+Virtualization, Cloud technologies and hosting providers
+
+
+
+
+http://dl.dropbox.com/u/6347216/openerpappliance-server-v6.1rc-Jan17.iso.zip
+http://dl.dropbox.com/u/6347216/openerpappliance-desktop-v6.0.3-Dec21.iso.zip
+http://dl.dropbox.com/u/6347216/openerpappliance-server-v6.0.3-Dec21.iso.zip
+
+
+http://dl.dropbox.com/u/6347216/openerpappliance-server-v6.1rc-Jan17.iso

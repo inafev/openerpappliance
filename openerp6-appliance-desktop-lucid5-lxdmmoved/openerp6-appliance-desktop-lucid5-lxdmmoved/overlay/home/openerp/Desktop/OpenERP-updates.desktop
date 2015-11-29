@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name= OpenERP updates 
+Comment= My OpenERP-updates.txt file 
+Exec=lxterminal --command "less /home/openerp/OpenERP-updates.txt"
+Icon=/usr/share/pixmaps/leafpad.xpm
+MimeType=text/plain
+Terminal=false
+Type=Application
+MimeType=text/plain
+Categories=Utility

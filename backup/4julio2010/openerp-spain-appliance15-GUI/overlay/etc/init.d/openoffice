@@ -1,0 +1,40 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:             openoffice
+# Required-Start:       $syslog
+# Required-Stop:        $syslog
+# Should-Start:         $network
+# Should-Stop:          $network
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    openoffice.org  headless server script
+# Description:          headless openoffice server script
+### END INIT INFO
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+OOo_HOME=/usr/lib/openoffice
+SOFFICE_PATH=$OOo_HOME/program/soffice
+VARSOFFICE=`ps uaxww | grep soffice.bin`
+
+case "$1" in
+    start)
+    if [ -n "$VARSOFFICE" ]; then
+      echo "OpenOffice headless server has already started."
+    else
+      echo "Starting OpenOffice headless server"
+      sudo -H -u soffice $SOFFICE_PATH -nologo -nofirststartwizard -headless -norestore -invisible -accept="socket,host=localhost,port=8100,tcpNoDelay=1;urp;" & >/dev/null 2>&1
+    fi
+    ;;
+    stop)
+    if [ -n "$VARSOFFICE" ]; then
+      echo "Stopping OpenOffice headless server."
+      killall soffice.bin
+    else
+    echo "Openoffice headless server is not running, foo."
+    fi
+    ;;
+    *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+esac
+exit 0

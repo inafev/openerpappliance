@@ -1,0 +1,9 @@
+#!/bin/bash -e
+# reconfigure locales
+
+[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
+
+##dpkg-reconfigure locales
+# El siguiente es para appliance sin desktop, no lo necesito en este caso
+#dpkg-reconfigure console-setup
+dpkg-reconfigure xserver-xorg

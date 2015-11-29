@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=openerp-client
+Type=Application
+Terminal=false
+Name[es_ES]=openerp-client
+Exec=/usr/bin/openerp-client
+Icon=/usr/local/openerp/pixmaps/openerp.xpm
+Comment[es_ES]=OpenERP GTK client
+Comment=OpenERP GTK client
+GenericName[en_US]=openerp-client

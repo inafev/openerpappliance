@@ -1,0 +1,88 @@
+OpenERP Appliance 5.0.12 Desktop July 14th 885MB
+12.31
+openerp5012appliance-desktop-x86-july14th.iso
+
+
+3.50
+
+OpenERP Appliance 5.0.12 Desktop July 14th - split file 01/4
+http://dl.dropbox.com/u/6347216/5012-desktop-jul14-112.iso.001
+
+openerp5012appliance-desktop-x86-july14th.iso.001
+openerp5012appliance-desktop-x86-july14th.iso.002
+openerp5012appliance-desktop-x86-july14th.iso.003
+openerp5012appliance-desktop-x86-july14th.iso.004
+
+
+OpenERP Appliance 5.0.12 Spain Desktop July 13th - split file 01/4
+100.31
+openerp5012appliance-spain-desktop-x86-july13.iso
+
+
+Buy OpenERP 5.0.12 Appliance Desktop ! - split file 01/4 
+
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_cart">
+<input type="hidden" name="business" value="openerpappliance@gmail.com">
+<input type="image" src="http://www.paypal.com/images/view_cart.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+<input type="hidden" name="display" value="1">
+</form>
+
+<a href=https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=openerpappliance%40gmail.com&undefined_quantity=0&item_name=OpenERP+Appliance+5.0.12+Desktop+July+14th+-+split+file+01/4&item_number=6&amount=3.50&no_shipping=1&shipping=0&shipping2=0&handling=0&notify_url=http://SoftSeller.com/cgi-bin/odbic.exe/ss/odb/SSNotify.odb&return=http://softseller.com/cgi-bin/odbic.exe/ss/odb/SSReturn.odb&rm=2&currency_code=EUR&lc=US> Buy now! </a>
+
+
+<a href=https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=openerpappliance%40gmail.com&undefined_quantity=0&item_name=OpenERP+Appliance+5.0.12+Desktop+July+14th+-+split+file+01/4&item_number=6&amount=3.50&no_shipping=1&shipping=0&shipping2=0&handling=0&notify_url=http://SoftSeller.com/cgi-bin/odbic.exe/ss/odb/SSNotify.odb&return=http://softseller.com/cgi-bin/odbic.exe/ss/odb/SSReturn.odb&rm=2&currency_code=EUR&lc=US> Buy now! </a>
+
+<form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+<input type="hidden" name="cmd" value="_cart">
+<input type="hidden" name="add" value="1">
+<input type="hidden" name="business" value="openerpappliance@gmail.com">
+<input type="image" src="http://images.paypal.com/es_XC/i/btn/x-click-but22.gif" border="0" name="submit" width="87" height="23" alt="Make payments with PayPal - it's fast, free and secure!">
+</form>
+
+-----------------------
+
+OpenERP 5.0.12 Appliance Server - split file 01/3
+2.70
+http://dl.dropbox.com/u/6347216/5012-server-Jul19-472.iso.001
+openerp5012appliance-server-x86-july19th.iso.001
+
+-------------------
+OpenERP 5.0.11 Appliance Spain Server - split file 01/3
+2.70
+openerp5011appliance-spain-server-x86-july8.iso.001
+
+-----------------------------
+
+
+Buy OpenERP 5.0.12 Appliance Server ! – split file 01/3
+
+
+Buy OpenERP 5.0.11 Appliance Spain Server ! – split file 01/3
+----------------------------------------------------------
+
+Buy OpenERP 6 Trunk Appliance Desktop ! - july 30th - split file 01/4
+openerp6trunk-desktop-x86-july30th.iso.001
+Buy OpenERP 6 Trunk Appliance Desktop ! - july 30th - split file 02/4
+openerp6trunk-desktop-x86-july30th.iso.002
+Buy OpenERP 6 Trunk Appliance Desktop ! - july 30th - split file 03/4
+openerp6trunk-desktop-x86-july30th.iso.003
+Buy OpenERP 6 Trunk Appliance Desktop ! - july 30th - split file 04/4
+openerp6trunk-desktop-x86-july30th.iso.004
+
+--------------------------------------
+
+
+84349f266c68b86fb43ef8dbd72665c9  342-6trunk-desktop-Jul30-342.iso.001
+6577f427744e505062b88a7e64ee0dd6  342-6trunk-desktop-Jul30-342.iso.002
+ac81ba7d01c24835781b6d6f02a303b0  342-6trunk-desktop-Jul30-342.iso.003
+8b334b84ec27ab9b3c7d4b0481b19818  342-6trunk-desktop-Jul30-342.iso.004
+
+
+
+
+
+
+
+
+

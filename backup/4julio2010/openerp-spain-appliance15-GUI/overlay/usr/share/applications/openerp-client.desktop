@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=OpenERP Client
+Comment=OpenERP Client
+Exec=/usr/bin/openerp-client
+Icon=/usr/local/openerp/pixmaps/openerp.xpm
+Terminal=false
+Type=Application
+Categories=GTK;GNOME;Application;System;
+StartupNotify=true

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=link to OpenERP Web
+Type=Link
+URL=http://localhost:8080
+Icon=gnome-fs-bookmark
