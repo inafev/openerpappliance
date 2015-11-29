@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=OpenERP Client
+Comment=OpenERP GTK Client
+Exec=/home/openerp/production/openerp-client/bin/openerp-client.py
+Terminal=false
+Type=Application
+Icon=/usr/local/openerp/pixmaps/openerp.xpm
+Categories=GNOME;Application;Database;System;

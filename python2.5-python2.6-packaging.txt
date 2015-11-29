@@ -1,0 +1,108 @@
+
+
+1) OpenERP 5, Ubuntu 8.04 Hardy, python 2.5
+==================================================================
+/usr/lib/python2.5/site-packages/openerp-server/
+/usr/lib/python2.5/site-packages/openerp-server/addons/
+/usr/lib/python2.5/site-packages/openerp-client/
+/usr/lib/python2.5/site-packages/openerp_web-5.0.12-py2.5.egg
+
+/usr/bin/openerp-client (works)
+/usr/bin/openerp-web (works)
+/usr/bin/openerp-server (works)
+
+2) OpenERP 6 (requires python2.6), Ubuntu 10.04 Lucid , python2.6
+=================================================================================
+/usr/local/lib/python2.6/dist-packages/openerp-server/
+/usr/local/lib/python2.6/dist-packages/openerp-server/addons/
+/usr/local/lib/python2.6/dist-packages/openerp-client/
+/usr/local/lib/python2.6/dist-packages/openerp_web-6.0.0_rc1-py2.6.egg/
+
+/usr/local/bin/openerp-client  (BROKEN)
+cd: 2: can't cd to /usr/lib/python2.6/site-packages/openerp-client
+/usr/bin/python: can't open file './openerp-client.py': [Errno 2] No such file or directory
+
+/usr/local/bin/openerp-web (works)
+/usr/local/bin/openerp-server (works)
+
+$ cat /usr/local/bin/openerp-client 
+#!/bin/sh
+cd /usr/lib/python2.6/site-packages/openerp-client
+exec /usr/bin/python ./openerp-client.py $@
+
+CURRENT PATH!!:
+/usr/local/lib/python2.6/dist-packages/openerp-client/
+
+
+3) OpenERP 6 (requires python2.6), Ubuntu 8.04 Hardy, python2.5
+======================================================================
+/usr/lib/python2.5/site-packages/openerp-server/
+/usr/lib/python2.5/site-packages/openerp-server/addons/
+/usr/lib/python2.5/site-packages/openerp-client/
+/usr/lib/python2.5/site-packages/openerp_web-6.0.0_rc1-py2.5.egg
+
+/usr/bin/openerp-client (works)
+/usr/bin/openerp-web (works)
+Could not find /usr/bin/openerp-server
+
+
+
+
+/usr/lib/python2.5/site-packages/openerp-server/addons/
+------------------
+
+  if [ $NEWADDONSREVISIONS -eq 1 ];
+  then
+  if [ ! -d $ADDONSPATH ]; then
+  sudo mkdir -p $ADDONSPATH
+  fi
+  sudo ln -sf /home/openerp/production/addons/* $ADDONSPATH > /dev/null 2>&1
+  sudo chown -R openerp.root $ADDONSPATH > /dev/null 2>&1
+  sudo chmod 755 $ADDONSPATH > /dev/null 2>&1
+  fi
+  ADDONSINSTALLSTATUS=3;
+  ;;
+  45)
+  if [ $NEWEXTRAADDONSREVISIONS -eq 1 ];
+  then
+  sudo ln -sf /home/openerp/production/extra-addons/* $ADDONSPATH > /dev/null 2>&1
+  sudo chown -R openerp.root $ADDONSPATH > /dev/null 2>&1
+  sudo chmod 755 $ADDONSPATH > /dev/null 2>&1
+  fi
+
+
+---------------------
+
+openerp@openerp6desktop:~/bin$ less openerp-updater.sh 
+openerp@openerp6desktop:~/bin$ PSQLRELEASE=8.4
+openerp@openerp6desktop:~/bin$ PYTHONRELEASE=python2.6
+openerp@openerp6desktop:~/bin$ UBUNTURELEASE=10.04
+openerp@openerp6desktop:~/bin$ INSTALLPATH=/usr
+openerp@openerp6desktop:~/bin$ SITEPACKAGESPATH=$INSTALLPATH/lib/$PYTHONRELEASE/site-packages
+openerp@openerp6desktop:~/bin$ OPENERPSERVERPATH=$SITEPACKAGESPATH/openerp-server
+openerp@openerp6desktop:~/bin$ ADDONSPATH=$OPENERPSERVERPATH/addons/
+openerp@openerp6desktop:~/bin$ 
+openerp@openerp6desktop:~/bin$ echo $ADDONSPATH      
+/usr/lib/python2.6/site-packages/openerp-server/addons/
+openerp@openerp6desktop:~/bin$ 
+openerp@openerp6desktop:~/bin$ 
+openerp@openerp6desktop:~/bin$ ls -l /usr/lib/python2.6/site-packages/openerp-server/addons/
+
+
+---------------
+
+/usr/lib/python2.6/site-packages/openerp-server/
+
+/usr/lib/python2.6/site-packages/openerp-server/addons/
+
+----------------------
+
+openerp@openerp6desktop:~/bin$ ls -l /usr/local/lib/python2.6/dist-packages/openerp-server/addons/
+total 108
+-rw-r--r--  1 root staff 35158 Nov 19 15:54 __init__.py
+-rw-r--r--  1 root staff 35101 Nov 19 15:56 __init__.pyc
+drwxr-sr-x 12 root staff  4096 Nov 16 22:23 base
+-rw-r--r--  1 root staff 14754 Nov  6 17:05 base_quality_interrogation.py
+
+
+

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=OpenERP Web Client
+Type=Application
+Terminal=false
+Name[es_ES]=OpenERP Web Client
+Exec=firefox http://localhost
+Icon=/usr/local/openerp/pixmaps/openerp.xpm
+Comment[es_ES]=OpenERP Web Client
+Comment=OpenERP Web Client
+GenericName[en_US]=OpenERP Web Client
+Categories=GNOME;Application;Database;System;
