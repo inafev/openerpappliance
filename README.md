@@ -7,8 +7,15 @@
 ## Major releases
 1. [First release was a large openerp-allinone-setup.sh script](https://github.com/inafev/openerpappliance/blob/master/openerp-allinone-setup.sh)
 2. [openerp5-appliance-server](https://github.com/inafev/openerpappliance/tree/master/openerp5-appliance-server)
-3. [openerp-updater.sh version 1](https://github.com/inafev/openerpappliance/blob/master/updater/openerp-updater.sh)
-4. [openerp-updater.sh version 2 (openerp 6.1 compliant)](https://github.com/inafev/openerpappliance/blob/master/openerp-updaterV2/V6.1/openerp-updater.sh)
-5. [Latest release is openerp6.1-appliance-server (march 2012)](https://github.com/inafev/openerpappliance/tree/master/openerp6.1-appliance-server)
+3. [openerp5-appliance-desktop-hardy](https://github.com/inafev/openerpappliance/tree/master/openerp5-appliance-desktop-hardy)
+4. [openerp5-spain-appliance-server](https://github.com/inafev/openerpappliance/tree/master/openerp5-spain-appliance-server)
+5. [openerp5-spain-appliance-desktop-hardy](https://github.com/inafev/openerpappliance/tree/master/openerp5-spain-appliance-desktop-hardy)
+6. [openerp6-appliance-server-lucid](https://github.com/inafev/openerpappliance/tree/master/openerp6-appliance-server-lucid)
+7. [openerp6-appliance-desktop-lucid5-lxdmmoved](https://github.com/inafev/openerpappliance/tree/master/openerp6-appliance-desktop-lucid5-lxdmmoved)
+8. [openerp-6.0.3-appliance-desktop-V2](https://github.com/inafev/openerpappliance/tree/master/openerp6.0.3-appliance-desktop-V2)
+9. [openerp6.0.3-appliance-server-V2](https://github.com/inafev/openerpappliance/tree/master/openerp6.0.3-appliance-server-V2)
+10. [openerp-updater.sh version 1](https://github.com/inafev/openerpappliance/blob/master/updater/openerp-updater.sh)
+11. [openerp-updater.sh version 2 (openerp 6.1 compliant)](https://github.com/inafev/openerpappliance/blob/master/openerp-updaterV2/V6.1/openerp-updater.sh)
+12. [Latest release is openerp6.1-appliance-server (march 2012)](https://github.com/inafev/openerpappliance/tree/master/openerp6.1-appliance-server)
 
 
