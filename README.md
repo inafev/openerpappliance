@@ -14,8 +14,8 @@
 7. [openerp6-appliance-desktop-lucid5-lxdmmoved](https://github.com/inafev/openerpappliance/tree/master/openerp6-appliance-desktop-lucid5-lxdmmoved)
 8. [openerp-6.0.3-appliance-desktop-V2](https://github.com/inafev/openerpappliance/tree/master/openerp6.0.3-appliance-desktop-V2)
 9. [openerp6.0.3-appliance-server-V2](https://github.com/inafev/openerpappliance/tree/master/openerp6.0.3-appliance-server-V2)
-10. [openerp-updater.sh version 1](https://github.com/inafev/openerpappliance/blob/master/updater/openerp-updater.sh)
-11. [openerp-updater.sh version 2 (openerp 6.1 compliant)](https://github.com/inafev/openerpappliance/blob/master/openerp-updaterV2/V6.1/openerp-updater.sh)
+10. [openerp-updater.sh version 1 included in openerp5 appliances](https://github.com/inafev/openerpappliance/blob/master/updater/openerp-updater.sh)
+11. [openerp-updater.sh version 2 included in openerp6 appliances](https://github.com/inafev/openerpappliance/blob/master/openerp-updaterV2/V6.1/openerp-updater.sh)
 12. [Latest release is openerp6.1-appliance-server (march 2012)](https://github.com/inafev/openerpappliance/tree/master/openerp6.1-appliance-server)
 
 
