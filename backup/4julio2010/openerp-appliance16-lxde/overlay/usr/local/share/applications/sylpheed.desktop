@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Sylpheed mail
-Comment=Sylpheed mail client
-Exec=sylpheed
-Terminal=false
-Type=Application
-Icon=/usr/share/pixmaps/sylpheed-128x128.png
-Categories=GNOME;Application;Database;System;

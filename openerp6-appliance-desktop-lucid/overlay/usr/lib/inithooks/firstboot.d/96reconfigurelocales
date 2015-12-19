@@ -1,7 +1,0 @@
-#!/bin/bash -e
-# reconfigure locales
-[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
-#dpkg-reconfigure locales
-# Not required in desktop appliance:
-#dpkg-reconfigure console-setup
-

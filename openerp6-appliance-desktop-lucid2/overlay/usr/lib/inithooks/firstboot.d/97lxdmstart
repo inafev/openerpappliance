@@ -1,6 +1,0 @@
-#!/bin/bash -e
-# we can now start lxdm once the first boot init scripts have run
-[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
-service lxdm start
-sleep 5
-

@@ -1,8 +1,0 @@
-#!/bin/bash -e
-# we can now start lxdm once the first boot init scripts have run
-[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
-#service lxdm start # does not work well, Feb 2011. 
-# LXDM is controlled by the Upstart Startup Manager:
-initctl start lxdm
-
-

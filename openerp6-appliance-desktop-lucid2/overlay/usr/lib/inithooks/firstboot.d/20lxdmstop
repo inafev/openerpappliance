@@ -1,6 +1,0 @@
-#!/bin/bash -e
-# lxdm is stopped make the first boot init scripts visible
-[ -e $INITHOOKS_CONF ] && . $INITHOOKS_CONF
-service lxdm stop
-sleep 5
-
